@@ -1,108 +1,63 @@
 using Lesson3_CNLTWeb.Models;
-using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace Lesson3_CNLTWeb.Data
 {
     /// <summary>
-    /// Thực hiện các thao tác CRUD với bảng Book qua ADO.NET.
+    /// Thực hiện các thao tác CRUD với bảng Book qua Entity Framework Core.
     /// </summary>
     public class BookRepository
     {
-        private readonly string _connectionString;
+        private readonly AppDbContext _context;
 
-        public BookRepository(IConfiguration configuration)
+        public BookRepository(AppDbContext context)
         {
-            _connectionString = configuration.GetConnectionString("BookManagement")
-                ?? throw new InvalidOperationException("Connection string 'BookManagement' not found.");
+            _context = context;
         }
 
         public List<Book> GetAll()
         {
-            var books = new List<Book>();
-
-            using var connection = new SqlConnection(_connectionString);
-            connection.Open();
-
-            using var command = connection.CreateCommand();
-            command.CommandText = "SELECT Id, Name, Price FROM dbo.Book ORDER BY Id";
-
-            using var reader = command.ExecuteReader();
-            while (reader.Read())
-            {
-                books.Add(MapBook(reader));
-            }
-
-            return books;
+            return _context.Books
+                .OrderBy(b => b.Id)
+                .ToList(); // SELECT * FROM Books ORDER BY Id
         }
 
         public Book? GetById(int id)
         {
-            using var connection = new SqlConnection(_connectionString);
-            connection.Open();
-
-            using var command = connection.CreateCommand();
-            command.CommandText = "SELECT Id, Name, Price FROM dbo.Book WHERE Id = @Id";
-            command.Parameters.AddWithValue("@Id", id);
-
-            using var reader = command.ExecuteReader();
-            return reader.Read() ? MapBook(reader) : null;
+            return _context.Books.Find(id); // SELECT * FROM Books WHERE Id = @id
         }
 
         public void Add(Book book)
         {
-            using var connection = new SqlConnection(_connectionString);
-            connection.Open();
-
-            using var command = connection.CreateCommand();
-            command.CommandText = """
-                INSERT INTO dbo.Book (Name, Price)
-                OUTPUT INSERTED.Id
-                VALUES (@Name, @Price);
-                """;
-            command.Parameters.AddWithValue("@Name", book.Name);
-            command.Parameters.AddWithValue("@Price", book.Price);
-
-            book.Id = (int)command.ExecuteScalar()!;
+            _context.Books.Add(book);
+            _context.SaveChanges();
         }
 
         public bool Update(Book book)
         {
-            using var connection = new SqlConnection(_connectionString);
-            connection.Open();
+            var existing = _context.Books.Find(book.Id);
+            if (existing == null)
+            {
+                return false;
+            }
 
-            using var command = connection.CreateCommand();
-            command.CommandText = """
-                UPDATE dbo.Book
-                SET Name = @Name, Price = @Price
-                WHERE Id = @Id;
-                """;
-            command.Parameters.AddWithValue("@Id", book.Id);
-            command.Parameters.AddWithValue("@Name", book.Name);
-            command.Parameters.AddWithValue("@Price", book.Price);
-
-            return command.ExecuteNonQuery() > 0;
+            existing.Name = book.Name;
+            existing.Price = book.Price;
+            _context.SaveChanges(); // lưu thay đổi vào database
+            return true;
         }
 
         public bool Delete(int id)
         {
-            using var connection = new SqlConnection(_connectionString);
-            connection.Open();
-
-            using var command = connection.CreateCommand();
-            command.CommandText = "DELETE FROM dbo.Book WHERE Id = @Id";
-            command.Parameters.AddWithValue("@Id", id);
-
-            return command.ExecuteNonQuery() > 0;
-        }
-
-        private static Book MapBook(SqlDataReader reader)
-        {
-            return new Book
+            var book = _context.Books.Find(id);
+            if (book == null)
             {
-                Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                Name = reader.GetString(reader.GetOrdinal("Name")),
-                Price = reader.GetDecimal(reader.GetOrdinal("Price"))
-            };
+                return false;
+            }
+
+            _context.Books.Remove(book); // DELETE FROM Books WHERE Id = @id
+            _context.SaveChanges();
+            return true;
         }
     }
 }
