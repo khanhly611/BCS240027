@@ -1,0 +1,22 @@
+﻿@model MID_BCS240027.Models.DishCategory_BCS240027
+
+<h2>Xóa loại món ăn</h2>
+
+<div class="alert alert-danger">
+    Bạn có chắc muốn xóa?
+</div>
+
+<form asp-action="Delete">
+
+    <input asp-for="Id"
+           type="hidden" />
+
+    <p>
+        <strong>@Model.Name</strong>
+    </p>
+
+    <button class="btn btn-danger">
+        Xóa
+    </button>
+
+</form>

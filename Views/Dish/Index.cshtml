@@ -1,0 +1,182 @@
+﻿@model IEnumerable<MID_BCS240027.Models.Dish_BCS240027>
+
+@{
+    ViewData["Title"] = "Danh sách món ăn";
+}
+
+<h2>Danh sách món ăn</h2>
+
+<form method="get">
+    <div class="row mb-3">
+
+        <div class="col-md-3">
+            <input type="text"
+                   name="keyword"
+                   value="@Context.Request.Query["keyword"]"
+                   class="form-control"
+                   placeholder="Tìm tên món ăn" />
+        </div>
+
+        <div class="col-md-2">
+            <select name="categoryId"
+                    asp-items="ViewBag.Categories"
+                    class="form-control">
+                <option value="">-- Loại món --</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <select name="isAvailable" class="form-control">
+                <option value="">-- Trạng thái --</option>
+                <option value="true">Đang bán</option>
+                <option value="false">Ngừng bán</option>
+            </select>
+        </div>
+
+        <div class="col-md-1">
+            <input type="number"
+                   name="minPrice"
+                   value="@Context.Request.Query["minPrice"]"
+                   class="form-control"
+                   placeholder="Từ" />
+        </div>
+
+        <div class="col-md-1">
+            <input type="number"
+                   name="maxPrice"
+                   value="@Context.Request.Query["maxPrice"]"
+                   class="form-control"
+                   placeholder="Đến" />
+        </div>
+
+        <div class="col-md-2">
+            <select name="sortOrder" class="form-control">
+                <option value="">Mặc định</option>
+                <option value="priceAsc">Giá tăng dần</option>
+                <option value="priceDesc">Giá giảm dần</option>
+                <option value="timeAsc">Thời gian chế biến</option>
+            </select>
+        </div>
+
+        <div class="col-md-1">
+            <button class="btn btn-primary">
+                Lọc
+            </button>
+        </div>
+
+    </div>
+</form>
+
+@if (ViewBag.PriceError != null)
+{
+    <div class="alert alert-danger">
+        @ViewBag.PriceError
+    </div>
+}
+
+<p>
+    <a asp-action="Create"
+       class="btn btn-success">
+        Thêm món ăn
+    </a>
+</p>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-warning">
+        Không tìm thấy dữ liệu
+    </div>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+
+        <thead>
+            <tr>
+                <th>Tên món</th>
+                <th>Loại</th>
+                <th>Giá</th>
+                <th>Thời gian</th>
+                <th>Phân loại</th>
+                <th>Trạng thái</th>
+                <th width="250"></th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+
+                    <td>@item.Name</td>
+
+                    <td>@item.DishCategory?.Name</td>
+
+                    <td>
+                        @item.Price.ToString("N0") VNĐ
+                    </td>
+
+                    <td>
+                        @item.PreparationTime phút
+                    </td>
+
+                    <td>
+                        @if (item.PreparationTime <= 15)
+                        {
+                            <span class="badge bg-success">
+                                Nhanh
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">
+                                Thông thường
+                            </span>
+                        }
+                    </td>
+
+                    <td>
+                        @if (item.IsAvailable)
+                        {
+                            <span class="text-success">
+                                Đang bán
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="text-danger">
+                                Ngừng bán
+                            </span>
+                        }
+                    </td>
+
+                    <td>
+
+                        <a asp-action="Detail"
+                           asp-route-id="@item.Id"
+                           class="btn btn-info btn-sm">
+                            Chi tiết
+                        </a>
+
+                        <a asp-action="Edit"
+                           asp-route-id="@item.Id"
+                           class="btn btn-warning btn-sm">
+                            Sửa
+                        </a>
+
+                        <a asp-action="Delete"
+                           asp-route-id="@item.Id"
+                           class="btn btn-danger btn-sm">
+                            Xóa
+                        </a>
+
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+}

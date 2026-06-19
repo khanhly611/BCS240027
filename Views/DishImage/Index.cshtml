@@ -1,0 +1,59 @@
+﻿@model IEnumerable<MID_BCS240027.Models.DishImage_BCS240027>
+
+<h2>Danh sách ảnh</h2>
+
+<p>
+    <a asp-action="Create"
+       class="btn btn-success">
+        Thêm ảnh
+    </a>
+</p>
+
+<table class="table table-bordered">
+
+    <tr>
+        <th>Ảnh</th>
+        <th>Món ăn</th>
+        <th>Đại diện</th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+
+            <td>
+                <img src="@item.ImageUrl"
+                     width="120" />
+            </td>
+
+            <td>
+                @item.Dish?.Name
+            </td>
+
+            <td>
+                @(item.IsThumbnail
+                            ? "Có"
+                            : "Không")
+        </td>
+
+            <td>
+
+                <a asp-action="Edit"
+                   asp-route-id="@item.Id"
+                   class="btn btn-warning btn-sm">
+                    Sửa
+                </a>
+
+                <a asp-action="Delete"
+                   asp-route-id="@item.Id"
+                   class="btn btn-danger btn-sm">
+                    Xóa
+                </a>
+
+            </td>
+
+        </tr>
+        }
+
+</table>

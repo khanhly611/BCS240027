@@ -1,8 +1,8 @@
-using Lesson3_CNLTWeb.Models;
+using MID_BCS240027.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace Lesson3_CNLTWeb.Controllers
+namespace MID_BCS240027.Controllers
 {
     public class HomeController : Controller
     {

@@ -1,0 +1,32 @@
+﻿@model MID_BCS240027.Models.DishImage_BCS240027
+
+<h2>Cập nhật ảnh</h2>
+
+<form asp-action="Edit">
+
+    <input asp-for="Id" type="hidden" />
+
+    <div class="mb-3">
+        <label>Đường dẫn ảnh</label>
+        <input asp-for="ImageUrl"
+               class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Món ăn</label>
+        <select asp-for="DishId"
+                asp-items="ViewBag.Dishes"
+                class="form-control">
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <input asp-for="IsThumbnail" />
+        <label>Ảnh đại diện</label>
+    </div>
+
+    <button class="btn btn-warning">
+        Cập nhật
+    </button>
+
+</form>

@@ -1,4 +1,4 @@
-namespace Lesson3_CNLTWeb.Models
+namespace MID_BCS240027.Models
 {
     public class ErrorViewModel
     {

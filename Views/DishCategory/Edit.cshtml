@@ -1,0 +1,25 @@
+﻿@model MID_BCS240027.Models.DishCategory_BCS240027
+
+<h2>Cập nhật loại món ăn</h2>
+
+<form asp-action="Edit">
+
+    <input asp-for="Id" type="hidden" />
+
+    <div class="mb-3">
+        <label>Tên loại</label>
+        <input asp-for="Name"
+               class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label>Mô tả</label>
+        <textarea asp-for="Description"
+                  class="form-control"></textarea>
+    </div>
+
+    <button class="btn btn-warning">
+        Cập nhật
+    </button>
+
+</form>

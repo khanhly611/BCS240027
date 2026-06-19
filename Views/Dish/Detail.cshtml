@@ -1,0 +1,74 @@
+﻿@model MID_BCS240027.Models.Dish_BCS240027
+
+<h2>Chi tiết món ăn</h2>
+
+<table class="table table-bordered">
+
+    <tr>
+        <th>Tên món ăn</th>
+        <td>@Model.Name</td>
+    </tr>
+
+    <tr>
+        <th>Loại món ăn</th>
+        <td>@Model.DishCategory?.Name</td>
+    </tr>
+
+    <tr>
+        <th>Giá</th>
+        <td>@Model.Price.ToString("N0") VNĐ</td>
+    </tr>
+
+    <tr>
+        <th>Thời gian chế biến</th>
+        <td>@Model.PreparationTime phút</td>
+    </tr>
+
+    <tr>
+        <th>Trạng thái</th>
+        <td>
+            @(Model.IsAvailable
+                        ? "Đang bán"
+                        : "Ngừng bán")
+        </td>
+    </tr>
+
+    <tr>
+        <th>Mô tả</th>
+        <td>@Model.Description</td>
+    </tr>
+
+</table>
+
+<h4>Danh sách ảnh</h4>
+
+@if (Model.DishImages == null ||
+   !Model.DishImages.Any())
+{
+    <div class="alert alert-warning">
+        Món ăn chưa có ảnh
+    </div>
+}
+else
+{
+    foreach (var image in Model.DishImages)
+    {
+        <img src="@image.ImageUrl"
+             width="200"
+             class="m-2 border" />
+
+        @if (image.IsThumbnail)
+        {
+            <span class="badge bg-success">
+                Ảnh đại diện
+            </span>
+        }
+
+        <br />
+    }
+}
+
+<a asp-action="Index"
+   class="btn btn-secondary">
+    Quay lại
+</a>

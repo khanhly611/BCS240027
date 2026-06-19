@@ -1,0 +1,65 @@
+﻿@model MID_BCS240027.Models.Dish_BCS240027
+
+<h2>Thêm món ăn</h2>
+
+<form asp-action="Create" method="post">
+
+    <div class="mb-3">
+        <label>Tên món ăn</label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name"
+              class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label>Giá</label>
+        <input asp-for="Price"
+               class="form-control" />
+        <span asp-validation-for="Price"
+              class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label>Thời gian chế biến (phút)</label>
+        <input asp-for="PreparationTime"
+               class="form-control" />
+        <span asp-validation-for="PreparationTime"
+              class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label>Loại món ăn</label>
+        <select asp-for="DishCategoryId"
+                asp-items="ViewBag.Categories"
+                class="form-control">
+        </select>
+    </div>
+
+    <div class="mb-3">
+        <label>Mô tả</label>
+        <textarea asp-for="Description"
+                  class="form-control">
+        </textarea>
+    </div>
+
+    <div class="mb-3">
+        <input asp-for="IsAvailable" />
+        <label>Đang bán</label>
+    </div>
+
+    <button class="btn btn-success">
+        Lưu
+    </button>
+
+    <a asp-action="Index"
+       class="btn btn-secondary">
+        Quay lại
+    </a>
+
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
